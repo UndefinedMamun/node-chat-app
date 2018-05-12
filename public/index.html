@@ -5,19 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Node Chat App</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
-    <h2>Welcome to the chat app</h2>
+<body class="chat">
 
+    <div class="chat__sidebar">
+        <h3>People</h3>
+        <div id="users">
 
-    <ol id="messages">
+        </div>
+    </div>
+
+    <div class="chat__main">
+        <ol id="messages" class="chat__messages"></ol>
+
+        <div class="chat__footer">
+            <form action="" id="messageForm">
+                <input placeholder="Message" type="text" name="message" autofocus autocomplete="off">
+                <button type="submit">Send</button>
+                
+            </form>
+            <button id="location">Send location</button>
+        </div>
+
         
-    </ol>
+    </div>
 
-    <form action="" id="messageForm">
-        <textarea name="message" id="" cols="30" rows="10"></textarea>
-        <button type="submit">Send</button>
-    </form>
+    
+
+    
 
     <script src="/socket.io/socket.io.js"></script>
     <script
