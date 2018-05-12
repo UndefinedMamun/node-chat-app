@@ -31,6 +31,31 @@
         
     </div>
 
+
+    <script id="message-template" type="text/template">
+        <li class="message">
+            <div class="message__title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}</span>
+            </div>
+            <div class="message__body">
+                <p>{{text}}</p>
+            </div>
+        </li>
+    </script>
+
+    <script id="location-message-template" type="text/template">
+        <li class="message">
+            <div class="message__title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}</span>
+            </div>
+            <div class="message__body">
+                <a href='{{url}}'>Current Location</a>
+            </div>
+        </li>
+    </script>
+
     
 
     
@@ -40,6 +65,8 @@
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous"></script>
+  <script src="js/libs/moment.min.js"></script>
+  <script src="js/libs/mustache.min.js"></script>
     <script src="js/index.js"></script>
 </body>
 </html>
