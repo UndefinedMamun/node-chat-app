@@ -65,4 +65,14 @@ describe('Users', () => {
         var list = users.getUserList('Test Room 2');
         expect(list).toEqual(['Sakkhor']);
     })
+
+    it('should return true if same user name already exist in same room', () => {
+        var isExist = users.isUserExist('sobuj', 'Test Room 1');
+        expect(isExist).toBe(true);
+    })
+
+    it('should return false if user name not exist in a room', () => {
+        var isExist = users.isUserExist('demoName', 'someroom');
+        expect(isExist).toBe(false);
+    })
 })

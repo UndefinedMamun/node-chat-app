@@ -6,6 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Chat Room | Node Chat App</title>
     <link rel="stylesheet" href="./css/style.css">
+    <style>
+        .chat__footer{
+            position: relative;
+        }
+
+        #typing{
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            display: none;
+        }
+    </style>
 </head>
 <body class="chat">
 
@@ -20,6 +32,8 @@
         <ol id="messages" class="chat__messages"></ol>
 
         <div class="chat__footer">
+            
+            <span id="typing">someone is typing...</span>
             <form action="" id="messageForm">
                 <input placeholder="Message" type="text" name="message" autofocus autocomplete="off">
                 <button type="submit">Send</button>

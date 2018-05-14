@@ -9,6 +9,14 @@ class Users {
         return user;
     }
 
+    isUserExist(name, room) {
+        name = name.toLowerCase();
+        var user = this.users.filter((user) => user.name.toLowerCase() === name && user.room === room)
+        if(user.length > 0)
+            return true;
+        return false;
+    }
+
     removeUser(id) {
         var user = this.getUser(id);
         this.users = this.users.filter((user) => user.id != id);

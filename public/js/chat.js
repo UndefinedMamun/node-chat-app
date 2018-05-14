@@ -1,4 +1,5 @@
 var socket = io();
+var inTypingUser = [];
 
 socket.on('connect', function(){
     var params = $.deparam(window.location.search);
@@ -65,18 +66,70 @@ socket.on('newLocationMessage', function(message) {
     scrollToBottom();
 })
 
+socket.on('typing',function(name){
+    if(inTypingUser.indexOf(name) == -1) {
+        inTypingUser.push(name);
+    }
+
+    renderTypingMessage();
+})
+
+socket.on('cancelTyping',function(name){
+    var index = inTypingUser.indexOf(name)
+    if(index != -1)
+        inTypingUser.splice(index,1);
+    
+    if(inTypingUser.length == 0) {
+        $("#typing").css('display','none');
+    } else {
+        renderTypingMessage();
+    }
+})
+
+function renderTypingMessage (){
+    var length = inTypingUser.length;
+    var userNames = "";
+    var isOrAre='is';
+
+    if(length > 1)
+        isOrAre='are';
+
+    inTypingUser.forEach((name, i)=> {
+        var delimiter = ', ';
+
+        if(i+1 == length){ //last
+            delimiter = ' ';
+        } else if(i == length-2) {//last-1
+            delimiter = ' and ';
+        }
+        
+        userNames = userNames+name+delimiter;
+    })
+    var message = `${userNames}${isOrAre} typing..`;
+    $("#typing").html(message).css('display','inline');
+}
+
 
 $('#messageForm').on('submit', function(e) {
     e.preventDefault();
     var messageTextBox = $('[name=message]');
 
-    socket.emit('createMessage', {
-        to: 'user',
-        text: messageTextBox.val()
-    }, function () {
+    socket.emit('createMessage', messageTextBox.val()
+    , function () {
         messageTextBox.val('');
     });
 })
+
+$('[name=message]').focus(function(e) {
+    socket.emit('typing')
+    // console.log('in')
+})
+
+$('[name=message]').focusout(function(e) {
+    socket.emit('cancelTyping')
+    // console.log('out')
+})
+
 var locationButton = $('#location');
 locationButton.on('click', function() {
     if(!navigator.geolocation) {
@@ -89,7 +142,6 @@ locationButton.on('click', function() {
         // console.log(postion.coords.longitude, postion.coords.latitude);
         locationButton.removeAttr('disabled').text('Send location')
         socket.emit('newLocation', {
-            from: 'admin',
             lat: postion.coords.latitude,
             lon: postion.coords.longitude
         })

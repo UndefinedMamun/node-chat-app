@@ -24,10 +24,14 @@ io.on('connection', (socket) => {
             return callback('Name and Room name are required.')
         }
 
+        if(users.isUserExist(params.name, params.room))
+            return callback('Name already taken in this room. Use different name.');
+
         socket.join(params.room)
         socket.emit('newMessage', generateMessage('Admin', `Welcome ${params.name}`))
 
         users.removeUser(socket.id);
+        
         users.addUser(socket.id, params.name, params.room);
         io.to(params.room).emit('updateList', users.getUserList(params.room))
 
@@ -49,11 +53,12 @@ io.on('connection', (socket) => {
 
 
     socket.on('createMessage', (message, callback) => {
-        console.log('createMessage', message);
+        let user = users.getUser(socket.id);
 
-        io.emit('newMessage', generateMessage(message.to, message.text));
-        callback();
-
+        if(user && isRealString(message)) {
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message));
+            callback();
+        }
         // socket.broadcast.emit('newMessage', {
         //     from: message.to,
         //     text: message.text,
@@ -62,9 +67,24 @@ io.on('connection', (socket) => {
     })
 
     socket.on('newLocation', (message) => {
-        console.log(message);
+        let user = users.getUser(socket.id);
+        
+        if(user) {
+            message.from = user.name;
+            io.to(user.room).emit('newLocationMessage', generateLocationMeassage(message));
+        }
+    })
 
-        io.emit('newLocationMessage', generateLocationMeassage(message));
+    socket.on('typing', ()=>{
+        let user = users.getUser(socket.id);
+        if(user)
+            socket.broadcast.to(user.room).emit('typing', user.name);
+    })
+
+    socket.on('cancelTyping', ()=>{
+        let user = users.getUser(socket.id);
+        if(user)
+            socket.broadcast.to(user.room).emit('cancelTyping', user.name);
     })
 })
 
